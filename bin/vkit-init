@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const chalk = require('chalk');
+
+'use strict';
+
+program
+  .usage('<template> [app-name]')
+  .option('-c, --clone', 'use git clone');
+
+// 自定义帮助文档
+program.on('--help', () => {
+  console.log();
+  console.log('Example:');
+  console.log(chalk.gray('  # generate a project from a remote template'));
+  console.log('  $ vkit init vue-template my-project');
+  console.log();
+});
+
+/**
+ * 如果只输入本身也返回帮助文档
+ */
+function help() {
+  program.parse(process.argv);
+  if (program.args.length < 1) return program.help();
+}
+help();
