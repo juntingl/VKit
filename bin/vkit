@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+console.log('欢迎使用，vkit-cli ！');
+
+const program = require('commander');
+program
+  .version(require('../package').version) // 指定版本
+  .usage('<command> [options]') // 设置当前命令的使用说明
+  .command('init', '生成一个新项目'); // 子命令
+program.parse(process.argv); // 解析参数
