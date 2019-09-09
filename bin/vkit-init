@@ -5,6 +5,7 @@
 const program = require('commander');
 const chalk = require('chalk');
 
+
 program
   .usage('<template> [app-name]')
   .option('-c, --clone', 'use git clone');
@@ -26,3 +27,42 @@ function help() {
   if (program.args.length < 1) return program.help();
 }
 help();
+
+/**
+ * Settings
+ */
+console.log('[选项参数]', program.args);
+// 模板名
+let template = program.args[0];
+// 用户指定项目名
+const rawName = program.args[1];
+// 是否在当前目录
+const inPlace = !rawName || rawName === '.';
+// 最终项目名
+const name = inPlace ? path.relative('../', process.cwd()) : rawName;
+// 项目生成目录
+const to = path.resolve(rawName || '.');
+// 是否使用 git clone 下载远程仓库
+const clone = program.clone || false;
+// 模板下载目录
+const tmp = path.join(home, '.vue-template', template.replace(/[\/:]/g, "-"));
+
+/**
+ * Settings
+ */
+
+console.log();
+process.on('exit', () => {
+  console.log();
+});
+
+// 询问用户是否在当前目录下创建项目；如果目录已经存在提示已存在
+if(inPlace || exists(to)) {
+  inquirer.prompt([
+    {
+      type: 'confirm',
+      message: inPlace ? '在当前目录创建项目？' : '目录已经存在，仍然继续？',
+      name: 'ok'
+    }
+  ])
+}
