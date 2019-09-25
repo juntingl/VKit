@@ -13,10 +13,14 @@
   "author": "Junting <342766475@qq.com> (https://github.com/twitchbody)",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.1.0",
     "chalk": "^2.4.2",
     "commander": "^3.0.1",
+    "consolidate": "^0.15.1",
     "download-git-repo": "^2.0.0",
+    "handlebars": "^4.3.1",
     "inquirer": "^7.0.0",
+    "metalsmith": "^2.3.0",
     "ora": "^4.0.0",
     "rimraf": "^3.0.0",
     "user-home": "^2.0.0"
