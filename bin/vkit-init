@@ -1,7 +1,5 @@
 #!/usr/bin/env node
-
 'use strict';
-
 const program = require('commander');
 const chalk = require('chalk');
 const inquirer = require("inquirer");
@@ -111,7 +109,7 @@ function downloadAndGenerate(template) {
   const spinner = ora('模板下载中，请稍等...');
   spinner.start();
 
-  // 删除本地缓存模板
+  // 删除本模板
   if (exists(tmp)) rm(tmp)
   download(template, tmp, { clone }, err => {
     spinner.stop();
