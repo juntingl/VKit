@@ -4,7 +4,16 @@
 
 const program = require('commander');
 const chalk = require('chalk');
-
+const inquirer = require("inquirer");
+const download = require("download-git-repo");
+const exists = require("fs").existsSync;
+const rm = require("rimraf").sync;
+const home = require("user-home");
+const path = require("path");
+const ora = require("ora");
+const logger = require("../lib/logger");
+const { isLocalPath, getTemplatePath } = require("../lib/local-path");
+const generate = require("../lib/generate");
 
 program
   .usage('<template> [app-name]')
@@ -48,9 +57,8 @@ const clone = program.clone || false;
 const tmp = path.join(home, '.vue-template', template.replace(/[\/:]/g, "-"));
 
 /**
- * Settings
+ * Padding
  */
-
 console.log();
 process.on('exit', () => {
   console.log();
@@ -64,5 +72,56 @@ if(inPlace || exists(to)) {
       message: inPlace ? '在当前目录创建项目？' : '目录已经存在，仍然继续？',
       name: 'ok'
     }
-  ])
+  ]).then(answers => {
+    if (answers.ok) {
+      run();
+    }
+  }).catch(logger.fatal);
+} else {
+  run();
+}
+
+/**
+ * 检查、下载、生成项目
+ */
+function run() {
+  // 检查是不是本地模板
+  if(isLocalPath(template)) {
+    const templatePath = getTemplatePath(template);
+    if (exists(templatePath)) {
+      generate(name, templatePath, to, err => {
+        if (err) logger.fatal(err);
+        console.log()
+        logger.success('"%s" 创建成功。', name);
+      });
+    } else {
+      logger.fatal('未找到本地模板 "%s" 。', template);
+    }
+  } else {
+    // 远程模板，需要先下载
+    downloadAndGenerate(template);
+  }
+}
+
+/**
+ * 从模板仓库下载模板啥事，并生成项目
+ * @param {String} template
+ */
+function downloadAndGenerate(template) {
+  const spinner = ora('模板下载中，请稍等...');
+  spinner.start();
+
+  // 删除本地缓存模板
+  if (exists(tmp)) rm(tmp)
+  download(template, tmp, { clone }, err => {
+    spinner.stop();
+    if (err) {
+      logger.fatal(`模板“${template}”下载失败：${err.message.trim()}`);
+    }
+    generate(name, tmp, to, err => {
+      if (err) logger.fatal(err);
+      console.log();
+      logger.success('"%s" 创建成功。', name);
+    });
+  });
 }
