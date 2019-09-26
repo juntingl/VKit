@@ -10,7 +10,7 @@
     "vkit-init": "bin/vkit-init"
   },
   "keywords": [],
-  "author": "Junting <342766475@qq.com> (https://github.com/twitchbody)",
+  "author": "Junting <342766475@qq.com> (https://github.com/JuntingLiu)",
   "license": "ISC",
   "dependencies": {
     "async": "^3.1.0",

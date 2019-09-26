@@ -2,16 +2,16 @@
 'use strict';
 const program = require('commander');
 const chalk = require('chalk');
-const inquirer = require("inquirer");
-const download = require("download-git-repo");
-const exists = require("fs").existsSync;
-const rm = require("rimraf").sync;
-const home = require("user-home");
-const path = require("path");
-const ora = require("ora");
-const logger = require("../lib/logger");
-const { isLocalPath, getTemplatePath } = require("../lib/local-path");
-const generate = require("../lib/generate");
+const inquirer = require('inquirer');
+const download = require('download-git-repo');
+const exists = require('fs').existsSync;
+const rm = require('rimraf').sync;
+const path = require('path');
+const home = require('user-home');
+const ora = require('ora');
+const logger = require('../lib/logger');
+const { isLocalPath, getTemplatePath } = require('../lib/local-path');
+const generate = require('../lib/generate');
 
 program
   .usage('<template> [app-name]')
@@ -38,7 +38,6 @@ help();
 /**
  * Settings
  */
-console.log('[选项参数]', program.args);
 // 模板名
 let template = program.args[0];
 // 用户指定项目名
@@ -52,7 +51,7 @@ const to = path.resolve(rawName || '.');
 // 是否使用 git clone 下载远程仓库
 const clone = program.clone || false;
 // 模板下载目录
-const tmp = path.join(home, '.vue-template', template.replace(/[\/:]/g, "-"));
+const tmp = path.join(home, '.vue-template', template.replace(/[\/:]/g, '-'));
 
 /**
  * Padding
@@ -63,18 +62,21 @@ process.on('exit', () => {
 });
 
 // 询问用户是否在当前目录下创建项目；如果目录已经存在提示已存在
-if(inPlace || exists(to)) {
-  inquirer.prompt([
-    {
-      type: 'confirm',
-      message: inPlace ? '在当前目录创建项目？' : '目录已经存在，仍然继续？',
-      name: 'ok'
-    }
-  ]).then(answers => {
-    if (answers.ok) {
-      run();
-    }
-  }).catch(logger.fatal);
+if (inPlace || exists(to)) {
+  inquirer
+    .prompt([
+      {
+        type: 'confirm',
+        message: inPlace ? '在当前目录创建项目？' : '目录已经存在，仍然继续？',
+        name: 'ok'
+      }
+    ])
+    .then(answers => {
+      if (answers.ok) {
+        run();
+      }
+    })
+    .catch(logger.fatal);
 } else {
   run();
 }
@@ -84,12 +86,12 @@ if(inPlace || exists(to)) {
  */
 function run() {
   // 检查是不是本地模板
-  if(isLocalPath(template)) {
+  if (isLocalPath(template)) {
     const templatePath = getTemplatePath(template);
     if (exists(templatePath)) {
       generate(name, templatePath, to, err => {
         if (err) logger.fatal(err);
-        console.log()
+        console.log();
         logger.success('"%s" 创建成功。', name);
       });
     } else {
@@ -102,15 +104,15 @@ function run() {
 }
 
 /**
- * 从模板仓库下载模板啥事，并生成项目
+ * 从模板仓库下载模板，并生成项目
  * @param {String} template
  */
 function downloadAndGenerate(template) {
-  const spinner = ora('模板下载中，请稍等...');
+  const spinner = ora('模板下载中，请稍等···');
   spinner.start();
 
-  // 删除本模板
-  if (exists(tmp)) rm(tmp)
+  // 如果存在本地模板，先删除
+  if (exists(tmp)) rm(tmp);
   download(template, tmp, { clone }, err => {
     spinner.stop();
     if (err) {
