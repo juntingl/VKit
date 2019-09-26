@@ -1,5 +1,5 @@
 {
-  "name": "vkit-cli",
+  "name": "vkit",
   "version": "1.0.0",
   "description": "A simple CLI for Vue.",
   "directories": {
