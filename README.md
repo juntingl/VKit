@@ -22,7 +22,7 @@ vkit -h
 vkit init <template> my-project
 ```
 
-> 当前远程模板： vue-template
+> 当前远程模板： JuntingLiu/vue-template
 
 ## Author
 
